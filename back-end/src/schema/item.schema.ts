@@ -13,3 +13,6 @@ export const createItemSchema = z.object({
     ownedQuantity:z.number().int().min(1).default(1)
 }).strict();
 export type CreateItemInput = z.infer<typeof createItemSchema>;
+
+export const updateItemSchema = createItemSchema.partial();
+export type UpdateItemInput = z.infer<typeof updateItemSchema>;

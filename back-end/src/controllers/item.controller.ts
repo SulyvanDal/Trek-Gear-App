@@ -1,14 +1,11 @@
 import type { Request, Response } from "express";
-import { getAllItems, getItemById } from "../services/item.service.ts";
-import { ValidationError } from "../lib/errors.ts";
+import { getAllItems, getItemById, createItem as createItemInDB,deleteItemById, patchItemById } from "../services/item.service.ts";
+import type { CreateItemInput, UpdateItemInput } from "../schema/item.schema.ts";
 
 export async function getItem(req: Request, res: Response) {
 
     const id = Number(req.params.id)
 
-    if (!Number.isInteger(id)) {
-        throw new ValidationError("id doit être un entier");
-    }
     const item = await getItemById(id);
     return res.status(200).json({
         data: item
@@ -23,4 +20,26 @@ export async function getItems(req:Request, res:Response) {
         data:items,
         meta:{}
     });
+}
+
+export async function createItem(req:Request, res:Response){
+    const input = req.body as CreateItemInput;
+    const item = await createItemInDB(input);
+    res.status(201).json({data : item});
+}
+
+export async function deleteItem(req:Request,res:Response){
+    const id = Number(req.params.id);
+
+    await deleteItemById(id);
+    res.status(204).end();
+}
+
+export async function patchItem(req:Request, res:Response){
+    const id = Number(req.params.id)
+
+    const input = req.body as UpdateItemInput;
+    const item = await patchItemById(id,input);
+    res.status(200).json({data:item})
+    
 }
