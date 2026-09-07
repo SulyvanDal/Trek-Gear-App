@@ -1,0 +1,5 @@
+node_modules/
+back-end/dist/
+back-end/prisma/migrations/
+back-end/prisma/dev.db
+CLAUDE.md

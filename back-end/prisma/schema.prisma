@@ -9,7 +9,7 @@ generator client {
 
 model Bag {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique
   bagItem   BagItem[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

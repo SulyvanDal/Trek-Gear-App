@@ -9,7 +9,7 @@ Application web de gestion de matériel de randonnée / trek.
 Ce projet a **deux objectifs**, dans cet ordre :
 
 1. **Apprendre une architecture web pro standard.** Comprendre concrètement une
-   application découplée *frontend / backend / base de données*, savoir pourquoi
+   application découplée _frontend / backend / base de données_, savoir pourquoi
    chaque frontière existe, et être capable de reproduire cette structure seul
    sur un autre projet. Le code n'est pas une fin en soi : chaque choix technique
    est fait pour être compris et justifié, pas copié d'un boilerplate.
@@ -37,10 +37,10 @@ Quand on prépare un trek, on veut pouvoir :
 
 D'où trois entités :
 
-| Entité    | Rôle |
-|-----------|------|
-| `Item`    | un objet du matériel possédé (nom, poids, catégorie, quantité possédée) |
-| `Bag`     | un profil de sac (un nom) |
+| Entité    | Rôle                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------ |
+| `Item`    | un objet du matériel possédé (nom, poids, catégorie, quantité possédée)                    |
+| `Bag`     | un profil de sac (un nom)                                                                  |
 | `BagItem` | **table de liaison** : quel item est dans quel sac, en quelle quantité, obligatoire ou non |
 
 `BagItem` est une table de liaison et pas une simple relation parce qu'elle
@@ -70,18 +70,18 @@ Le but est de **rendre la frontière des responsabilités explicite** :
 - la base n'est jamais touchée directement par le frontend.
 
 Chaque couche pourrait être remplacée sans réécrire les autres (c'est le test
-qu'on se fixe : *si je change X, qu'est-ce que ça oblige à toucher ailleurs ?*).
+qu'on se fixe : _si je change X, qu'est-ce que ça oblige à toucher ailleurs ?_).
 
 ---
 
 ## 4. Stack technique
 
-| Couche    | Choix | Raison |
-|-----------|-------|--------|
-| Frontend  | React + Vite, TypeScript | *(prévu, pas encore démarré)* |
-| Backend   | Node.js + Express 5, TypeScript | API REST, écosystème connu, minimal |
-| ORM       | Prisma | typage généré depuis le schéma, migrations versionnées |
-| Base      | SQLite pour démarrer | zéro config, un fichier ; migration PostgreSQL prévue **sans réécriture du code applicatif** grâce à Prisma |
+| Couche   | Choix                           | Raison                                                                                                      |
+| -------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Frontend | React + Vite, TypeScript        | _(prévu, pas encore démarré)_                                                                               |
+| Backend  | Node.js + Express 5, TypeScript | API REST, écosystème connu, minimal                                                                         |
+| ORM      | Prisma                          | typage généré depuis le schéma, migrations versionnées                                                      |
+| Base     | SQLite pour démarrer            | zéro config, un fichier ; migration PostgreSQL prévue **sans réécriture du code applicatif** grâce à Prisma |
 
 ---
 
@@ -94,7 +94,7 @@ l'intérêt pédagogique du projet.
 
 `back-end/` (et `front-end/` à venir) sont des **sous-projets indépendants**,
 chacun avec son `package.json`, ses dépendances, ses scripts. Toute commande npm
-se lance depuis le dossier concerné. Des *workspaces* npm à la racine pourront
+se lance depuis le dossier concerné. Des _workspaces_ npm à la racine pourront
 piloter les deux plus tard, quand le besoin s'en fera sentir.
 
 ### 5.2 Exécution TypeScript sans transpileur en dev
@@ -156,7 +156,7 @@ séparer « comment l'app est montée » de « où / comment on la démarre ».
   `POST /api/items`, `DELETE /api/items/:id`.
 - **Relations imbriquées** : `GET /api/bags/:bagId/items` — l'URL raconte la
   relation.
-- **Filtrer / trier / paginer** = *query params*, pas de nouvelle URL.
+- **Filtrer / trier / paginer** = _query params_, pas de nouvelle URL.
 - **Enveloppe de réponse** :
   - succès : `{ "data": ... }` (objet ou tableau), `"meta"` uniquement sur les
     collections (pagination à venir) ;
@@ -164,6 +164,7 @@ séparer « comment l'app est montée » de « où / comment on la démarre ».
 
   L'enveloppe permet d'ajouter des métadonnées plus tard sans casser le client,
   et donne une forme identique entre succès et erreur.
+
 - **Codes HTTP** : `200` lecture / modif, `201` création, `204` suppression,
   `400` requête invalide, `404` ressource absente.
 
@@ -202,9 +203,9 @@ Choix : **lever une erreur typée + un middleware central la traduit**, plutôt 
 
 - La validation vit dans un **middleware avant le controller** : le controller
   reçoit une donnée déjà propre et typée.
-- **Répartition** : Zod rejette ce qui est malformé ou hors bornes *dans
-  l'absolu* (type, champ requis, longueur, `weightGrams >= 0`, `category` dans la
-  liste) ; le **service** rejette ce qui est incohérent *avec l'état existant*
+- **Répartition** : Zod rejette ce qui est malformé ou hors bornes _dans
+  l'absolu_ (type, champ requis, longueur, `weightGrams >= 0`, `category` dans la
+  liste) ; le **service** rejette ce qui est incohérent _avec l'état existant_
   (ce `Bag` existe-t-il ? cet item est-il déjà dans ce sac ?).
 - Le **type TypeScript est déduit du schéma** (`z.infer<typeof schema>`) : une
   seule source de vérité, pas de dérive entre la règle runtime et le type.
@@ -230,18 +231,18 @@ BagItem  bagId, itemId, bagQuantity (défaut 1), isRequired (défaut false)
 
 ## 6. État d'avancement
 
-| Domaine | État |
-|---------|------|
-| Socle backend (Express, config TS, `/api`, `/api/health`) | ✅ |
-| Client Prisma (instance unique) | ✅ |
-| Gestion d'erreurs centralisée (`AppError` + middleware) | ✅ |
-| `GET /api/items` (liste) et `GET /api/items/:id` (détail) | ✅ |
-| Schéma de validation Zod pour la création d'item | ✅ |
-| Middleware de validation générique | 🚧 en cours |
-| `POST` / `PATCH` / `DELETE` items | ⬜ à faire |
-| Ressources `bags` et `bag-items` | ⬜ à faire |
-| Frontend | ⬜ pas démarré |
-| Migration PostgreSQL | ⬜ envisagée plus tard |
+| Domaine                                                   | État                   |
+| --------------------------------------------------------- | ---------------------- |
+| Socle backend (Express, config TS, `/api`, `/api/health`) | ✅                     |
+| Client Prisma (instance unique)                           | ✅                     |
+| Gestion d'erreurs centralisée (`AppError` + middleware)   | ✅                     |
+| `GET /api/items` (liste) et `GET /api/items/:id` (détail) | ✅                     |
+| Schéma de validation Zod pour la création d'item          | ✅                     |
+| Middleware de validation générique                        | 🚧 en cours            |
+| `POST` / `PATCH` / `DELETE` items                         | ⬜ à faire             |
+| Ressources `bags` et `bag-items`                          | ⬜ à faire             |
+| Frontend                                                  | ⬜ pas démarré         |
+| Migration PostgreSQL                                      | ⬜ envisagée plus tard |
 
 ---
 
@@ -257,9 +258,9 @@ npm run dev                   # http://localhost:3000
 
 Scripts :
 
-| Script | Effet |
-|--------|-------|
-| `npm run dev` | serveur en watch, charge `.env`, **ne vérifie pas les types** |
+| Script              | Effet                                                                    |
+| ------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`       | serveur en watch, charge `.env`, **ne vérifie pas les types**            |
 | `npm run typecheck` | `tsc --noEmit` — la vérification de types (à lancer avant chaque commit) |
-| `npm run build` | compile vers `dist/` |
-| `npm start` | lance le build (`dist/server.js`) |
+| `npm run build`     | compile vers `dist/`                                                     |
+| `npm start`         | lance le build (`dist/server.js`)                                        |

@@ -1,10 +1,10 @@
-import {Router} from "express";
-import healthRouter from "./health.routes.ts";
+import { Router } from "express";
 import routerItem from "./item.routes.ts";
+import routerBag from "./bag.routes.ts";
 
 const apiRouter = Router();
 
-apiRouter.use("/health", healthRouter);
 apiRouter.use("/items", routerItem);
+apiRouter.use("/bags", routerBag);
 
 export default apiRouter;
