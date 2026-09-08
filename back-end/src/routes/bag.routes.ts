@@ -12,9 +12,14 @@ import { createBagSchema, updateBagSchema } from "../schema/bag.schema.ts";
 
 const router = Router();
 router.get("/", getBags);
-router.get("/:id", validateIdParam, getBag);
+router.get("/:id", validateIdParam("id"), getBag);
 router.post("/", validateBody(createBagSchema), createBag);
-router.delete("/:id", validateIdParam, deleteBag);
-router.patch("/:id", validateIdParam, validateBody(updateBagSchema), updateBag);
+router.delete("/:id", validateIdParam("id"), deleteBag);
+router.patch(
+  "/:id",
+  validateIdParam("id"),
+  validateBody(updateBagSchema),
+  updateBag,
+);
 
 export default router;

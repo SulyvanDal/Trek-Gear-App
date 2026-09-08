@@ -13,12 +13,12 @@ import { createItemSchema, updateItemSchema } from "../schema/item.schema.ts";
 const router = Router();
 
 router.get("/", getItems);
-router.get("/:id", validateIdParam, getItem);
+router.get("/:id", validateIdParam("id"), getItem);
 router.post("/", validateBody(createItemSchema), createItem);
-router.delete("/:id", validateIdParam, deleteItem);
+router.delete("/:id", validateIdParam("id"), deleteItem);
 router.patch(
   "/:id",
-  validateIdParam,
+  validateIdParam("id"),
   validateBody(updateItemSchema),
   updateItem,
 );
