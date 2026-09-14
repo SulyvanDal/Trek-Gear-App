@@ -4,6 +4,7 @@ import type { AddBagItemInput, BagItemLine } from "../schema/bagItem.schema.ts";
 import { getItemById } from "./item.service.ts";
 import { ConflictError } from "../lib/errors.ts";
 import { Prisma } from "@prisma/client";
+import { computeWeightTotals } from "../lib/weight.ts";
 
 export async function getBagItems(bagId: number) {
   //Check si l'id du bag existe, si ko, une erreur interrompre la séquence
@@ -17,16 +18,7 @@ export async function getBagItems(bagId: number) {
   });
 
   const items: BagItemLine[] = [];
-  let totalWeightGrams = 0;
-  let requiredWeightGrams = 0;
   bagItems.forEach((row) => {
-    const lineWeightGrams = row.item.weightGrams * row.bagQuantity;
-
-    totalWeightGrams += lineWeightGrams;
-    if (row.isRequired) {
-      requiredWeightGrams += lineWeightGrams;
-    }
-
     items.push({
       itemId: row.itemId,
       name: row.item.name,
@@ -37,16 +29,14 @@ export async function getBagItems(bagId: number) {
     });
   });
 
-  const optionalWeightGrams = totalWeightGrams - requiredWeightGrams;
+  const allWeights = computeWeightTotals(items);
+
   return {
     items: items,
-    totals: {
-      totalWeightGrams: totalWeightGrams,
-      requiredWeightGrams: requiredWeightGrams,
-      optionalWeightGrams: optionalWeightGrams,
-    },
+    totals: allWeights,
   };
 }
+
 export async function addItemToBag(bagId: number, input: AddBagItemInput) {
   //Contrôle de l'existence des objects en BDD
   await getBagById(bagId);

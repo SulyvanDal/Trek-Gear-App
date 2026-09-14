@@ -2,9 +2,32 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError, NotFoundError } from "../lib/errors.ts";
 import type { CreateBagInput, UpdateBagInput } from "../schema/bag.schema.ts";
+import { computeWeightTotals, type WeightLine } from "../lib/weight.ts";
 
-export function getAllBags() {
-  return prisma.bag.findMany({ orderBy: { name: "asc" } });
+export async function getAllBags() {
+  const bags = await prisma.bag.findMany({
+    orderBy: { name: "asc" },
+    include: { bagItem: { include: { item: true } } },
+  });
+
+  return bags.map((bag) => {
+    let weightLines: WeightLine[] = [];
+    bag.bagItem.forEach((itemLines) => {
+      weightLines.push({
+        weightGrams: itemLines.item.weightGrams,
+        quantity: itemLines.bagQuantity,
+        isRequired: itemLines.isRequired,
+      });
+    });
+    let totals = computeWeightTotals(weightLines);
+    return {
+      id: bag.id,
+      name: bag.name,
+      ...totals,
+      createdAt: bag.createdAt,
+      updatedAt: bag.updatedAt,
+    };
+  });
 }
 
 export async function getBagById(id: number) {
