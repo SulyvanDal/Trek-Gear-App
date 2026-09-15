@@ -14,6 +14,7 @@ export type Bag = {
   name: string;
   createdAt: string;
   updatedAt: string;
+  totals: Totals;
 };
 
 export type BagItemLine = {

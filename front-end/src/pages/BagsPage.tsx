@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { getBags } from "../api/bags";
 import type { Bag } from "../types/api";
-import { BagContentsModal } from "../components/BagContentsModal";
+import { Link } from "react-router-dom";
 
 function BagsPage() {
   const [bags, setBags] = useState<Bag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedBagId, setSelectedBagId] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -29,17 +28,13 @@ function BagsPage() {
     <>
       <ul>
         {bags.map((bag) => (
-          <li key={bag.id} onClick={() => setSelectedBagId(bag.id)}>
-            {bag.name}
+          <li key={bag.id}>
+            <Link to={`/bags/${bag.id}`}>
+              {bag.name} {bag.totals.totalWeightGrams}
+            </Link>
           </li>
         ))}
       </ul>
-      {selectedBagId !== null && (
-        <BagContentsModal
-          bagId={selectedBagId}
-          onClose={() => setSelectedBagId(null)}
-        />
-      )}
     </>
   );
 }
