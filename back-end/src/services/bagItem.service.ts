@@ -14,7 +14,7 @@ export async function getBagItems(bagId: number) {
   const bagItems = await prisma.bagItem.findMany({
     where: { bagId },
     include: { item: true },
-    orderBy: { item: { name: "asc" } },
+    orderBy: [{ item: { category: "asc" } }, { item: { name: "asc" } }],
   });
 
   const items: BagItemLine[] = [];

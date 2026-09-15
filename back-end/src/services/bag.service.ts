@@ -23,11 +23,12 @@ export async function getAllBags() {
     return {
       id: bag.id,
       name: bag.name,
-      ...totals,
-      createdAt: bag.createdAt,
-      updatedAt: bag.updatedAt,
+      totals : totals,
+      createdAt : bag.createdAt,
+      updatedAt : bag.updatedAt,
+
     };
-  });
+  }); 
 }
 
 export async function getBagById(id: number) {
