@@ -8,7 +8,7 @@ import { computeWeightTotals } from "../lib/weight.ts";
 
 export async function getBagItems(bagId: number) {
   //Check si l'id du bag existe, si ko, une erreur interrompre la séquence
-  await getBagById(bagId);
+  const bag = await getBagById(bagId);
 
   //Chercher les items lié à un bag.id
   const bagItems = await prisma.bagItem.findMany({
@@ -32,6 +32,7 @@ export async function getBagItems(bagId: number) {
   const allWeights = computeWeightTotals(items);
 
   return {
+    bagName : bag.name,
     items: items,
     totals: allWeights,
   };
