@@ -1,0 +1,119 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.buttonBack {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: var(--color-accent);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.bagName {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.totalWeight {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.summary {
+  font-size: 15px;
+  color: var(--color-secondary);
+  margin-bottom: 32px;
+}
+
+.categoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categoryGroup {
+  margin-bottom: 24px;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.categoryName {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.categoryWeight {
+  font-size: 15px;
+  color: var(--color-secondary);
+}
+
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.badgeCore {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.badgeRequired {
+  background-color: var(--color-accent);
+  color: var(--color-card-bg);
+}
+
+.badgeOptional {
+  background-color: transparent;
+  border: 1px solid var(--color-option-bar);
+  color: var(--color-secondary);
+}
+
+.itemName {
+  flex: 1;
+  font-size: 15px;
+}
+
+.itemQuantity {
+  font-size: 13px;
+  color: var(--color-secondary);
+  width: 32px;
+  text-align: right;
+}
+
+.itemWeight {
+  font-size: 15px;
+  font-weight: 500;
+  width: 64px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

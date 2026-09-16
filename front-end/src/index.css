@@ -1,0 +1,24 @@
+:root {
+  --color-bg: #f7f3ec;
+  --color-primary: #2b2622;
+  --color-accent: #2f5d47;
+  --color-border: #e4ddd1;
+  --color-card-bg: #fdfbf7;
+  --color-secondary: #6b6255;
+  --color-option-bar: #c9bfaf;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+li {
+  list-style-type: none;
+}

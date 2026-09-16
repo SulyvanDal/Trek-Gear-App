@@ -7,13 +7,15 @@ const [bagContent, setBagContent] = useState<BagItemLine[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totals, setTotals] = useState<Totals | null>(null);
+  const [bagName, setBagName] = useState<string|null>(null);
 
   useEffect(() => {
     async function load() {
       try {
         const data = await getBagContents(bagId);
         setBagContent(data.data);
-        setTotals(data.meta);
+        setTotals(data.meta.totals);
+        setBagName(data.meta.bagName)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erreur inconnue");
       } finally {
@@ -28,5 +30,6 @@ const [bagContent, setBagContent] = useState<BagItemLine[]>([]);
     error : error,
     loading : loading,
     totals: totals,
+    bagName : bagName,
   }
 }

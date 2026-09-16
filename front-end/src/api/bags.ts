@@ -6,5 +6,5 @@ export function getBags() {
 }
 
 export function getBagContents(bagId: number) {
-  return requestWithMeta<BagItemLine[], Totals>(`/bags/${bagId}/items`);
+  return requestWithMeta<BagItemLine[], {totals : Totals, bagName : string}>(`/bags/${bagId}/items`);
 }
