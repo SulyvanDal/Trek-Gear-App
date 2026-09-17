@@ -17,3 +17,9 @@ export type BagItemLine = {
   quantity: number;
   weightGrams: number;
 };
+
+export const updateBagItemSchema = z.object({
+  bagQuantity : z.number().int().min(1).optional(),
+  isRequired : z.boolean().optional(),
+}).strict();
+export type UpdateBagItemInput = z.infer<typeof updateBagItemSchema>

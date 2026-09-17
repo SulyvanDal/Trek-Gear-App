@@ -1,8 +1,12 @@
 import { prisma } from "../lib/prisma.ts";
 import { getBagById } from "./bag.service.ts";
-import type { AddBagItemInput, BagItemLine } from "../schema/bagItem.schema.ts";
+import type {
+  AddBagItemInput,
+  BagItemLine,
+  UpdateBagItemInput,
+} from "../schema/bagItem.schema.ts";
 import { getItemById } from "./item.service.ts";
-import { ConflictError } from "../lib/errors.ts";
+import { ConflictError, NotFoundError } from "../lib/errors.ts";
 import { Prisma } from "@prisma/client";
 import { computeWeightTotals } from "../lib/weight.ts";
 
@@ -32,7 +36,7 @@ export async function getBagItems(bagId: number) {
   const allWeights = computeWeightTotals(items);
 
   return {
-    bagName : bag.name,
+    bagName: bag.name,
     items: items,
     totals: allWeights,
   };
@@ -70,6 +74,47 @@ export async function addItemToBag(bagId: number, input: AddBagItemInput) {
       err.code === "P2002"
     ) {
       throw new ConflictError("Cet item est déjà dans ce sac");
+    }
+    throw err;
+  }
+}
+
+export async function updateBagItem(
+  bagId: number,
+  itemId: number,
+  input: UpdateBagItemInput,
+) {
+  await getBagById(bagId);
+  await getItemById(itemId);
+  try {
+    return await prisma.bagItem.update({
+      where: { bagId_itemId: { bagId, itemId } },
+      data: input,
+    });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      throw new NotFoundError("bagItem", `${bagId}/${itemId}`);
+    }
+    throw err;
+  }
+}
+
+export async function deleteBagItem(bagId: number, itemId: number) {
+  await getBagById(bagId);
+  await getItemById(itemId);
+  try {
+    return await prisma.bagItem.delete({
+      where: { bagId_itemId: { bagId, itemId } },
+    });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      throw new NotFoundError("bagItem", `${bagId}/${itemId}`);
     }
     throw err;
   }
