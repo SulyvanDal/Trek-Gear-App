@@ -1,35 +1,79 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useBagContents } from "../hooks/useBagContents";
 import { groupByCategory } from "../utils/groupByCategory";
 import { formatGramsToKg } from "../utils/formatGramsToKg";
 import { computeTotalWeight } from "../utils/computeTotalWeight";
 import styles from "./BagDetailPage.module.css";
+import { AddBagItemModal } from "../components/AddBagItemModal";
+import { useState } from "react";
+import { useDeleteBagItem } from "../hooks/useDeleteBagItem";
+import { MdDelete } from "react-icons/md";
+import { useDeleteBag } from "../hooks/useDeleteBag";
 
 function BagDetailPage() {
   const param = useParams();
   const bagId = Number(param.id);
   const bagContent = useBagContents(bagId);
   const bagContentByCategory = groupByCategory(bagContent.data);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const removeItem = useDeleteBagItem();
+  const removeBag = useDeleteBag();
+  const navigate = useNavigate();
 
   if (bagContent.loading) return <p>Chargement des items du sac</p>;
   if (bagContent.error) return <p>{bagContent.error}</p>;
   if (!bagContent.totals) return <p>Pas d'item dans le sac</p>;
 
+  async function handleDeleteItemConfirm(itemId: number) {
+    if (window.confirm("Voulez- vous supprimer cet item ?")) {
+      const success = await removeItem.remove(bagId, itemId);
+      if (success) {
+        bagContent.refetch();
+      }
+    }
+    return;
+  }
+
+  async function handleDeleteBagConfirm() {
+    if (window.confirm("Voulez-vous supprimer ce sac ?")) {
+      const success = await removeBag.remove(bagId);
+      if (success) {
+        navigate("/");
+      }
+    }
+  }
   return (
     <div className={styles.page}>
-      <Link to={"/"} className={styles.buttonBack}>
-        ← Sacs
-      </Link>
+      <div className={styles.topBar}>
+        <Link to={"/"} className={styles.buttonBack}>
+          ← Sacs
+        </Link>
+        <button
+          className={styles.deleteBagButton}
+          onClick={() => handleDeleteBagConfirm()}
+        >
+          <MdDelete size={20} />
+        </button>
+      </div>
       <div className={styles.header}>
         <h1 className={styles.bagName}>{bagContent.bagName}</h1>
         <div className={styles.totalWeight}>
           {formatGramsToKg(bagContent.totals.totalWeightGrams)} kg
         </div>
       </div>
-      <div className={styles.summary}>
-        Nécessaire {formatGramsToKg(bagContent.totals.requiredWeightGrams)} kg
-        {" · "}
-        Optionnel {formatGramsToKg(bagContent.totals.optionalWeightGrams)} kg
+      <div className={styles.summaryRow}>
+        <div className={styles.summary}>
+          Obligatoire {formatGramsToKg(bagContent.totals.requiredWeightGrams)}{" "}
+          kg
+          {" · "}
+          Optionnel {formatGramsToKg(bagContent.totals.optionalWeightGrams)} kg
+        </div>
+        <button
+          className={styles.addItemButton}
+          onClick={() => setIsModalOpen(true)}
+        >
+          + Ajouter un élément
+        </button>
       </div>
       <ul className={styles.categoryList}>
         {bagContentByCategory.map((bag) => (
@@ -57,12 +101,28 @@ function BagDetailPage() {
                   <div className={styles.itemWeight}>
                     {formatGramsToKg(row.weightGrams * row.quantity)} kg
                   </div>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteItemConfirm(row.itemId)}
+                  >
+                    <MdDelete size={20} />
+                  </button>
                 </li>
               ))}
             </ul>
           </li>
         ))}
       </ul>
+
+      {isModalOpen && (
+        <AddBagItemModal
+          bagId={bagId}
+          onClose={() => {
+            setIsModalOpen(false);
+            bagContent.refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -7,6 +7,11 @@ export async function request<T>(
   options?: RequestInit,
 ): Promise<T> {
   const res = await fetch(BASE_URL + path, options);
+
+  if (res.status === 204) {
+    return undefined as T;
+  }
+  
   const body = (await res.json()) as ApiSuccess<T> | ApiError;
   if (!res.ok) {
     const message = "error" in body ? body.error.message : "Erreur inconnue";

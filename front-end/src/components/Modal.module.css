@@ -1,0 +1,87 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 38, 34, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal {
+  background: var(--color-card-bg);
+  border-radius: 8px;
+  padding: 28px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formField {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--color-primary);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepperButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  background: #ffffff;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancelButton {
+  font-size: 15px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--color-secondary);
+  background: transparent;
+  border: none;
+}
+
+.confirmButton {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--color-accent);
+  color: var(--color-card-bg);
+  border: none;
+}
+
+.confirmButton:disabled {
+  background: var(--color-option-bar);
+  color: var(--color-secondary);
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  color: var(--color-error);
+  font-size: 13px;
+}

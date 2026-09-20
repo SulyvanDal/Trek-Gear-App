@@ -49,6 +49,21 @@
     color: var(--color-secondary);
 }
 
+.addBagButton{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-card-bg);
+    background: var(--color-accent);
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 24px;
+}
+
 .bagsGrid{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

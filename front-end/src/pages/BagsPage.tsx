@@ -1,35 +1,27 @@
-import { useEffect, useState } from "react";
-import { getBags } from "../api/bags";
-import type { Bag } from "../types/api";
 import { Link } from "react-router-dom";
 import styles from "./BagsPage.module.css";
 import { formatGramsToKg } from "../utils/formatGramsToKg";
+import { useBags } from "../hooks/useBags";
+import { MdAdd } from "react-icons/md";
+import { useState } from "react";
+import { AddBagModal } from "../components/AddBagModal";
 
 function BagsPage() {
-  const [bags, setBags] = useState<Bag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const bags = useBags();
+  const [isModalOpen, setIseModalOpen] = useState<boolean>(false);
+  if (bags.loading) return <p>Chargement des sacs</p>;
+  if (bags.error) return <p>{bags.error}</p>;
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getBags();
-        setBags(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Erreur inconnue");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
-  if (loading) return <p>Chargement des sacs</p>;
-  if (error) return <p>{error}</p>;
   return (
     <div className={styles.bagsPage}>
+      <button
+        className={styles.addBagButton}
+        onClick={() => setIseModalOpen(true)}
+      >
+        <MdAdd size={18} /> Créer un sac
+      </button>
       <ul className={styles.bagsGrid}>
-        {bags.map((bag) => {
+        {bags.data.map((bag) => {
           const requiredPercent =
             bag.totals.totalWeightGrams === 0
               ? 0
@@ -42,9 +34,7 @@ function BagsPage() {
                 <div className={styles.bagWeightTitle}>
                   {formatGramsToKg(bag.totals.totalWeightGrams)} kg
                 </div>
-                <div className={styles.bagTitle}>
-                  {bag.name} 
-                </div>
+                <div className={styles.bagTitle}>{bag.name}</div>
                 <div className={styles.conteneurBarre}>
                   <div
                     className={`${styles.barreSegmentcore} ${styles.barreSegmentRequiredWeight}`}
@@ -55,9 +45,12 @@ function BagsPage() {
                     style={{ width: `${optionnalPercent}%` }}
                   />
                 </div>
-                <div className={`${styles.weightRequiredAndOptional} ${styles.weightName}`}>
+                <div
+                  className={`${styles.weightRequiredAndOptional} ${styles.weightName}`}
+                >
                   <div>
-                    Nécessaire {formatGramsToKg(bag.totals.requiredWeightGrams)}
+                    Obligatoire{" "}
+                    {formatGramsToKg(bag.totals.requiredWeightGrams)}
                     kg
                   </div>
                   <div>
@@ -69,6 +62,15 @@ function BagsPage() {
           );
         })}
       </ul>
+
+      {isModalOpen && (
+        <AddBagModal
+          onClose={() => {
+            setIseModalOpen(false);
+            bags.refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

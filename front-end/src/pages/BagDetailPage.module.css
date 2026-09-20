@@ -4,9 +4,15 @@
   padding: 32px;
 }
 
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .buttonBack {
   display: inline-block;
-  margin-bottom: 20px;
   font-size: 15px;
   color: var(--color-accent);
 }
@@ -30,10 +36,16 @@
   color: var(--color-accent);
 }
 
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
 .summary {
   font-size: 15px;
   color: var(--color-secondary);
-  margin-bottom: 32px;
 }
 
 .categoryList {
@@ -116,4 +128,49 @@
   width: 64px;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.addItemButton {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-card-bg);
+  background: var(--color-accent);
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.deleteBagButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-error);
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--color-error);
+  cursor: pointer;
+}
+
+.deleteBagButton:hover {
+  background: var(--color-error);
+  color: var(--color-card-bg);
+}
+
+.deleteButton:hover {
+  color: var(--color-error);
+  background: var(--color-bg);
 }
