@@ -48,12 +48,16 @@ export type AddItemToBagInput = {
   isRequired: boolean;
 };
 
+export type UpdateBagItemInput = {
+  bagQuantity?: number;
+  isRequired?: boolean;
+};
+
 export type CreateItemInput = {
-  name : string;
-  weightGrams : number;
-  category : string;
-  ownedQuantity : number;
-}
+  name: string;
+  weightGrams: number;
+  category: string;
+  ownedQuantity: number;
+};
 
-export type UpdateItemInput= Partial<CreateItemInput>
-
+export type UpdateItemInput = Partial<CreateItemInput>;

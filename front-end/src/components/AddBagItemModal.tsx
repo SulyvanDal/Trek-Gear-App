@@ -107,11 +107,11 @@ export function AddBagItemModal({
             +
           </button>
         </div>
-        <div className={styles.toggleRow}>
+        <div className={modalStyles.toggleRow}>
           <button
             type="button"
-            className={`${styles.toggleButton} ${
-              isRequired ? styles.toggleActive : styles.toggleInactive
+            className={`${modalStyles.toggleButton} ${
+              isRequired ? modalStyles.toggleActive : modalStyles.toggleInactive
             }`}
             onClick={() => setIsRequired(true)}
           >
@@ -119,8 +119,8 @@ export function AddBagItemModal({
           </button>
           <button
             type="button"
-            className={`${styles.toggleButton} ${
-              !isRequired ? styles.toggleActive : styles.toggleInactive
+            className={`${modalStyles.toggleButton} ${
+              !isRequired ? modalStyles.toggleActive : modalStyles.toggleInactive
             }`}
             onClick={() => setIsRequired(false)}
           >

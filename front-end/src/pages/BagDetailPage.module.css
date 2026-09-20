@@ -141,6 +141,23 @@
   border: none;
 }
 
+.editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  color: var(--color-accent);
+  background: var(--color-bg);
+}
+
 .deleteButton {
   display: flex;
   align-items: center;

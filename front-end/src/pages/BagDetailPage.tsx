@@ -7,18 +7,21 @@ import styles from "./BagDetailPage.module.css";
 import { AddBagItemModal } from "../components/AddBagItemModal";
 import { useState } from "react";
 import { useDeleteBagItem } from "../hooks/useDeleteBagItem";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { useDeleteBag } from "../hooks/useDeleteBag";
+import { UpdateBagItemModal } from "../components/UpdateBagItemModal";
+import type { BagItemLine } from "../types/api";
 
 function BagDetailPage() {
   const param = useParams();
   const bagId = Number(param.id);
   const bagContent = useBagContents(bagId);
   const bagContentByCategory = groupByCategory(bagContent.data);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const removeItem = useDeleteBagItem();
   const removeBag = useDeleteBag();
   const navigate = useNavigate();
+  const [isModalCreateOpen, setIsModalCreateOpen] = useState<boolean>(false);
+  const [itemTarget, setItemtarget] = useState<BagItemLine | null>(null);
 
   if (bagContent.loading) return <p>Chargement des items du sac</p>;
   if (bagContent.error) return <p>{bagContent.error}</p>;
@@ -70,7 +73,7 @@ function BagDetailPage() {
         </div>
         <button
           className={styles.addItemButton}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalCreateOpen(true)}
         >
           + Ajouter un élément
         </button>
@@ -102,6 +105,14 @@ function BagDetailPage() {
                     {formatGramsToKg(row.weightGrams * row.quantity)} kg
                   </div>
                   <button
+                    className={styles.editButton}
+                    onClick={() => {
+                      setItemtarget(row);
+                    }}
+                  >
+                    <MdEdit/>
+                  </button>
+                  <button
                     className={styles.deleteButton}
                     onClick={() => handleDeleteItemConfirm(row.itemId)}
                   >
@@ -114,11 +125,22 @@ function BagDetailPage() {
         ))}
       </ul>
 
-      {isModalOpen && (
+      {isModalCreateOpen && (
         <AddBagItemModal
           bagId={bagId}
           onClose={() => {
-            setIsModalOpen(false);
+            setIsModalCreateOpen(false);
+            bagContent.refetch();
+          }}
+        />
+      )}
+
+      {itemTarget && (
+        <UpdateBagItemModal
+          bagId={bagId}
+          row={itemTarget}
+          onClose={() => {
+            setItemtarget(null);
             bagContent.refetch();
           }}
         />

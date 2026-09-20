@@ -1,4 +1,10 @@
-import type { BagItemLine, Totals, Bag, AddItemToBagInput } from "../types/api";
+import type {
+  BagItemLine,
+  Totals,
+  Bag,
+  AddItemToBagInput,
+  UpdateBagItemInput,
+} from "../types/api";
 import { request, requestWithMeta } from "./client";
 
 export function getBags() {
@@ -19,6 +25,14 @@ export async function addItemToBag(bagId: number, input: AddItemToBagInput) {
   });
 }
 
+export async function updateBagItem(bagId: number,itemId :number, input: UpdateBagItemInput) {
+  return request<BagItemLine>(`/bags/${bagId}/items/${itemId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
 export async function deleteBagItem(bagId: number, itemId: number) {
   return request<void>(`/bags/${bagId}/items/${itemId}`, {
     method: "DELETE",
@@ -29,7 +43,7 @@ export async function createBag(name: string) {
   return request<Bag>("/bags", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({name}),
+    body: JSON.stringify({ name }),
   });
 }
 
