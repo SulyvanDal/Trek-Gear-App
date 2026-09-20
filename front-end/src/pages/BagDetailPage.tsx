@@ -38,14 +38,14 @@ function BagDetailPage() {
     if (window.confirm("Voulez-vous supprimer ce sac ?")) {
       const success = await removeBag.remove(bagId);
       if (success) {
-        navigate("/");
+        navigate("/bags");
       }
     }
   }
   return (
     <div className={styles.page}>
       <div className={styles.topBar}>
-        <Link to={"/"} className={styles.buttonBack}>
+        <Link to={"/bags"} className={styles.buttonBack}>
           ← Sacs
         </Link>
         <button

@@ -10,6 +10,7 @@
 }
 
 body {
+  margin: 0;
   background-color: var(--color-bg);
   color: var(--color-primary);
   font-family: Arial, Helvetica, sans-serif;
