@@ -1,0 +1,110 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.addItemButton {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-card-bg);
+  background: var(--color-accent);
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  color: var(--color-accent);
+  background: var(--color-bg);
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  color: var(--color-error);
+  background: var(--color-bg);
+}
+
+.itemsBox {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.itemName {
+  flex: 1;
+  font-size: 15px;
+}
+
+.itemCategory {
+  font-size: 13px;
+  color: var(--color-secondary);
+  width: 120px;
+}
+
+.itemQuantity {
+  font-size: 13px;
+  color: var(--color-secondary);
+  width: 60px;
+  text-align: right;
+}
+
+.itemWeight {
+  font-size: 15px;
+  font-weight: 500;
+  width: 64px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
