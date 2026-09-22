@@ -78,7 +78,7 @@ qu'on se fixe : _si je change X, qu'est-ce que ça oblige à toucher ailleurs ?_
 
 | Couche   | Choix                           | Raison                                                                                                      |
 | -------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Frontend | React + Vite, TypeScript        | _(prévu, pas encore démarré)_                                                                               |
+| Frontend | React + Vite, TypeScript        | HMR rapide, écosystème standard ; découplé du back, ne connaît que l'API REST                              |
 | Backend  | Node.js + Express 5, TypeScript | API REST, écosystème connu, minimal                                                                         |
 | ORM      | Prisma                          | typage généré depuis le schéma, migrations versionnées                                                      |
 | Base     | SQLite pour démarrer            | zéro config, un fichier ; migration PostgreSQL prévue **sans réécriture du code applicatif** grâce à Prisma |
@@ -92,10 +92,10 @@ l'intérêt pédagogique du projet.
 
 ### 5.1 Organisation du dépôt
 
-`back-end/` (et `front-end/` à venir) sont des **sous-projets indépendants**,
-chacun avec son `package.json`, ses dépendances, ses scripts. Toute commande npm
-se lance depuis le dossier concerné. Des _workspaces_ npm à la racine pourront
-piloter les deux plus tard, quand le besoin s'en fera sentir.
+`back-end/` et `front-end/` sont des **sous-projets indépendants**, chacun avec
+son `package.json`, ses dépendances, ses scripts. Toute commande npm se lance
+depuis le dossier concerné. Des _workspaces_ npm à la racine pourront piloter
+les deux plus tard, quand le besoin s'en fera sentir.
 
 ### 5.2 Exécution TypeScript sans transpileur en dev
 
@@ -231,22 +231,55 @@ BagItem  bagId, itemId, bagQuantity (défaut 1), isRequired (défaut false)
 
 ## 6. État d'avancement
 
-| Domaine                                                   | État                   |
-| --------------------------------------------------------- | ---------------------- |
-| Socle backend (Express, config TS, `/api`, `/api/health`) | ✅                     |
-| Client Prisma (instance unique)                           | ✅                     |
-| Gestion d'erreurs centralisée (`AppError` + middleware)   | ✅                     |
-| `GET /api/items` (liste) et `GET /api/items/:id` (détail) | ✅                     |
-| Schéma de validation Zod pour la création d'item          | ✅                     |
-| Middleware de validation générique                        | 🚧 en cours            |
-| `POST` / `PATCH` / `DELETE` items                         | ⬜ à faire             |
-| Ressources `bags` et `bag-items`                          | ⬜ à faire             |
-| Frontend                                                  | ⬜ pas démarré         |
-| Migration PostgreSQL                                      | ⬜ envisagée plus tard |
+**Backend** — CRUD complet et validé (Zod) sur les trois ressources :
+
+| Domaine                                                          | État |
+| ----------------------------------------------------------------- | ---- |
+| Socle backend (Express, config TS, `/api`)                       | ✅   |
+| Client Prisma (instance unique), gestion d'erreurs centralisée    | ✅   |
+| `Item` — `GET`/`POST`/`PATCH`/`DELETE`                            | ✅   |
+| `Bag` — `GET`/`POST`/`PATCH`/`DELETE`, poids agrégés à la lecture | ✅   |
+| `BagItem` — `GET`/`POST`/`PATCH`/`DELETE`, tri par catégorie      | ✅   |
+
+**Frontend** — React + Vite + TypeScript, CSS Modules, `react-router-dom` :
+
+| Domaine                                                              | État |
+| ----------------------------------------------------------------------| ---- |
+| Nav (Sacs / Inventaire) et routing                                    | ✅   |
+| Liste des sacs (cartes, poids obligatoire/optionnel)                   | ✅   |
+| Détail d'un sac, contenu groupé par catégorie                          | ✅   |
+| Créer / éditer le nom / supprimer un sac                               | 🚧 création et suppression faites, édition du nom : [#1][i1] |
+| Ajouter / éditer / supprimer un item dans un sac                       | ✅   |
+| Page Inventaire — CRUD complet du catalogue d'items                    | ✅   |
+
+**Reste à faire**, suivi désormais via les [issues du dépôt][issues] plutôt
+qu'ici (pour éviter que ce tableau se désynchronise du code, comme la version
+précédente de cette section) :
+
+- [#1][i1] Éditer le nom d'un sac
+- [#2][i2] Recherche / tri / filtre sur la liste des sacs
+- [#3][i3] Onglet "Nouveau" (créer un item à la volée) dans la modale d'ajout
+- [#4][i4] Page Accueil
+- [#5][i5] Comparaison entre profils de sacs — **l'objectif initial du projet**,
+  pas encore attaqué : tout le travail à date porte sur la gestion de contenu
+- Migration PostgreSQL — envisagée pour l'hébergement, pas commencée
+
+[issues]: https://github.com/SulyvanDal/app-materiel-trek/issues
+[i1]: https://github.com/SulyvanDal/app-materiel-trek/issues/1
+[i2]: https://github.com/SulyvanDal/app-materiel-trek/issues/2
+[i3]: https://github.com/SulyvanDal/app-materiel-trek/issues/3
+[i4]: https://github.com/SulyvanDal/app-materiel-trek/issues/4
+[i5]: https://github.com/SulyvanDal/app-materiel-trek/issues/5
 
 ---
 
-## 7. Démarrer le backend
+## 7. Lancer le projet en local
+
+Les deux sous-projets se lancent **séparément**, dans deux terminaux — le
+frontend appelle `http://localhost:3000/api` en dur (`front-end/src/api/client.ts`),
+donc le backend doit tourner pour que le frontend fonctionne.
+
+### Backend
 
 ```bash
 cd back-end
@@ -264,3 +297,20 @@ Scripts :
 | `npm run typecheck` | `tsc --noEmit` — la vérification de types (à lancer avant chaque commit) |
 | `npm run build`     | compile vers `dist/`                                                     |
 | `npm start`         | lance le build (`dist/server.js`)                                        |
+
+### Frontend
+
+```bash
+cd front-end
+npm install
+npm run dev                   # http://localhost:5173
+```
+
+Scripts :
+
+| Script          | Effet                                    |
+| ---------------- | ----------------------------------------- |
+| `npm run dev`     | serveur Vite en dev, HMR                 |
+| `npm run build`   | `tsc -b` (vérification de types) + build |
+| `npm run lint`    | ESLint                                   |
+| `npm run preview` | sert le build de `dist/` en local        |
