@@ -11,6 +11,11 @@ export const createItemSchema = z
       "Photo",
       "Hygiène",
       "Nourriture",
+      "Premiers secours",
+      "Activité",
+      "Vêtement",
+      "Rangement",
+      "Sac",
     ]),
     ownedQuantity: z.number().int().min(1).default(1),
   })
