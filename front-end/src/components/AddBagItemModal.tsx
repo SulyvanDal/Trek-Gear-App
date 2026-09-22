@@ -52,6 +52,8 @@ export function AddBagItemModal({
         <div className={styles.searchWrapper}>
           <input
             type="text"
+            autoFocus
+            placeholder="Rechercher un item..."
             className={modalStyles.formField}
             value={searchText}
             onFocus={() => setIsSearchFocused(true)}

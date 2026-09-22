@@ -18,6 +18,8 @@ export function AddBagModal({ onClose }: { onClose: () => void }) {
       <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
         <input
           type="text"
+          autoFocus
+          placeholder="Nom du sac"
           className={modalStyles.formField}
           value={bagName}
           onChange={(e) => setBagName(e.target.value)}

@@ -29,6 +29,24 @@
   color: var(--color-primary);
 }
 
+.inputWithSuffix {
+  position: relative;
+}
+
+.inputWithSuffix .formField {
+  padding-right: 90px;
+}
+
+.inputSuffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-secondary);
+  font-size: 13px;
+  pointer-events: none;
+}
+
 .stepper {
   display: flex;
   align-items: center;

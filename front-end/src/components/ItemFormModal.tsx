@@ -48,16 +48,21 @@ export function ItemFormModal({
       <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
         <input
           type="text"
+          autoFocus
+          placeholder="Nom de l'item"
           className={modalStyles.formField}
           value={name}
           onChange={(e) => setName(e.target.value)}
         ></input>
-        <input
-          type="number"
-          className={modalStyles.formField}
-          value={weightGrams}
-          onChange={(e) => setWeightGrams(e.target.valueAsNumber)}
-        ></input>
+        <div className={modalStyles.inputWithSuffix}>
+          <input
+            type="number"
+            className={modalStyles.formField}
+            value={weightGrams}
+            onChange={(e) => setWeightGrams(e.target.valueAsNumber)}
+          ></input>
+          <span className={modalStyles.inputSuffix}>Grammes</span>
+        </div>
         <select
           className={modalStyles.formField}
           value={category}
