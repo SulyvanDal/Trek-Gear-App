@@ -1,4 +1,4 @@
-# app-matériel-trek
+# Trek Gear App - Trory
 
 Application web de gestion de matériel de randonnée / trek.
 
