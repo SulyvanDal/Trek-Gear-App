@@ -6,25 +6,28 @@ import type {
   UpdateItemInput,
 } from "../schema/item.schema.ts";
 
-export async function getItemById(id: number) {
-  const item = await prisma.item.findUnique({ where: { id } });
+export async function getItemById(userId: number, id: number) {
+  const item = await prisma.item.findUnique({ where: { ownerId: userId, id } });
 
   if (item === null) throw new NotFoundError("item", id);
 
   return item;
 }
 
-export function getAllItems() {
-  return prisma.item.findMany({ orderBy: { name: "asc" } });
+export function getAllItems(userId: number) {
+  return prisma.item.findMany({
+    where: { ownerId: userId },
+    orderBy: { name: "asc" },
+  });
 }
 
-export function createItem(input: CreateItemInput) {
-  return prisma.item.create({ data: input });
+export function createItem(userId: number, input: CreateItemInput) {
+  return prisma.item.create({ data: { ...input, ownerId: userId } });
 }
 
-export async function deleteItemById(id: number) {
+export async function deleteItemById(userId: number, id: number) {
   try {
-    await prisma.item.delete({ where: { id } });
+    await prisma.item.delete({ where: { ownerId: userId, id } });
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
@@ -36,9 +39,16 @@ export async function deleteItemById(id: number) {
   }
 }
 
-export async function updateItemById(id: number, input: UpdateItemInput) {
+export async function updateItemById(
+  userId: number,
+  id: number,
+  input: UpdateItemInput,
+) {
   try {
-    return await prisma.item.update({ where: { id }, data: input });
+    return await prisma.item.update({
+      where: { ownerId: userId, id },
+      data: input,
+    });
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&

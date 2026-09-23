@@ -4,8 +4,9 @@ import { ConflictError, NotFoundError } from "../lib/errors.ts";
 import type { CreateBagInput, UpdateBagInput } from "../schema/bag.schema.ts";
 import { computeWeightTotals, type WeightLine } from "../lib/weight.ts";
 
-export async function getAllBags() {
+export async function getAllBags(userId: number) {
   const bags = await prisma.bag.findMany({
+    where: { ownerId: userId },
     orderBy: { name: "asc" },
     include: { bagItem: { include: { item: true } } },
   });
@@ -23,16 +24,15 @@ export async function getAllBags() {
     return {
       id: bag.id,
       name: bag.name,
-      totals : totals,
-      createdAt : bag.createdAt,
-      updatedAt : bag.updatedAt,
-
+      totals: totals,
+      createdAt: bag.createdAt,
+      updatedAt: bag.updatedAt,
     };
-  }); 
+  });
 }
 
-export async function getBagById(id: number) {
-  const bag = await prisma.bag.findUnique({ where: { id } });
+export async function getBagById(userId: number, id: number) {
+  const bag = await prisma.bag.findUnique({ where: { id, ownerId: userId } });
 
   if (bag === null) {
     throw new NotFoundError("bag", id);
@@ -41,9 +41,9 @@ export async function getBagById(id: number) {
   return bag;
 }
 
-export async function createBag(input: CreateBagInput) {
+export async function createBag(userId: number, input: CreateBagInput) {
   try {
-    return await prisma.bag.create({ data: input });
+    return await prisma.bag.create({ data: { ...input, ownerId: userId } });
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
@@ -55,9 +55,9 @@ export async function createBag(input: CreateBagInput) {
   }
 }
 
-export async function deleteBagById(id: number) {
+export async function deleteBagById(userId: number, id: number) {
   try {
-    return await prisma.bag.delete({ where: { id } });
+    return await prisma.bag.delete({ where: { id, ownerId: userId } });
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
@@ -69,9 +69,16 @@ export async function deleteBagById(id: number) {
   }
 }
 
-export async function updateBagById(id: number, input: UpdateBagInput) {
+export async function updateBagById(
+  userId: number,
+  id: number,
+  input: UpdateBagInput,
+) {
   try {
-    return await prisma.bag.update({ where: { id }, data: input });
+    return await prisma.bag.update({
+      where: { id, ownerId: userId },
+      data: input,
+    });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       switch (err.code) {
