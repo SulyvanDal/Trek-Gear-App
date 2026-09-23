@@ -10,13 +10,13 @@ import { ConflictError, NotFoundError } from "../lib/errors.ts";
 import { Prisma } from "@prisma/client";
 import { computeWeightTotals } from "../lib/weight.ts";
 
-export async function getBagItems(bagId: number) {
+export async function getBagItems(userId: number, bagId: number) {
   //Check si l'id du bag existe, si ko, une erreur interrompre la séquence
-  const bag = await getBagById(bagId);
+  const bag = await getBagById(userId, bagId);
 
   //Chercher les items lié à un bag.id
   const bagItems = await prisma.bagItem.findMany({
-    where: { bagId },
+    where: { bagId, item: { ownerId: userId } },
     include: { item: true },
     orderBy: [{ item: { category: "asc" } }, { item: { name: "asc" } }],
   });
@@ -42,10 +42,14 @@ export async function getBagItems(bagId: number) {
   };
 }
 
-export async function addItemToBag(bagId: number, input: AddBagItemInput) {
+export async function addItemToBag(
+  userId: number,
+  bagId: number,
+  input: AddBagItemInput,
+) {
   //Contrôle de l'existence des objects en BDD
-  await getBagById(bagId);
-  await getItemById(input.itemId);
+  await getBagById(userId, bagId);
+  await getItemById(userId, input.itemId);
 
   try {
     const bagItem = await prisma.bagItem.create({
@@ -80,12 +84,13 @@ export async function addItemToBag(bagId: number, input: AddBagItemInput) {
 }
 
 export async function updateBagItem(
+  userId: number,
   bagId: number,
   itemId: number,
   input: UpdateBagItemInput,
 ) {
-  await getBagById(bagId);
-  await getItemById(itemId);
+  await getBagById(userId, bagId);
+  await getItemById(userId, itemId);
   try {
     return await prisma.bagItem.update({
       where: { bagId_itemId: { bagId, itemId } },
@@ -102,9 +107,13 @@ export async function updateBagItem(
   }
 }
 
-export async function deleteBagItem(bagId: number, itemId: number) {
-  await getBagById(bagId);
-  await getItemById(itemId);
+export async function deleteBagItem(
+  userId: number,
+  bagId: number,
+  itemId: number,
+) {
+  await getBagById(userId, bagId);
+  await getItemById(userId, itemId);
   try {
     return await prisma.bagItem.delete({
       where: { bagId_itemId: { bagId, itemId } },

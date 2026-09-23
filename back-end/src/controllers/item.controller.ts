@@ -12,14 +12,17 @@ import type {
 } from "../schema/item.schema.ts";
 
 export async function getItem(req: Request, res: Response) {
+  const userId = res.locals.userId;
   const id = Number(req.params.id);
-  const item = await getItemById(id);
+  const item = await getItemById(userId, id);
 
   res.status(200).json({ data: item });
 }
 
 export async function getItems(req: Request, res: Response) {
-  const items = await getAllItems();
+  const userId = res.locals.userId;
+
+  const items = await getAllItems(userId);
   res.status(200).json({
     data: items,
     meta: {},
@@ -27,23 +30,27 @@ export async function getItems(req: Request, res: Response) {
 }
 
 export async function createItem(req: Request, res: Response) {
+  const userId = res.locals.userId;
+
   const input = req.body as CreateItemInput;
-  const item = await createItemInDB(input);
+  const item = await createItemInDB(userId, input);
 
   res.status(201).json({ data: item });
 }
 
 export async function deleteItem(req: Request, res: Response) {
+  const userId = res.locals.userId;
   const id = Number(req.params.id);
-  await deleteItemById(id);
+  await deleteItemById(userId, id);
 
   res.status(204).end();
 }
 
 export async function updateItem(req: Request, res: Response) {
+  const userId = res.locals.userId;
   const id = Number(req.params.id);
   const input = req.body as UpdateItemInput;
-  const item = await updateItemById(id, input);
+  const item = await updateItemById(userId, id, input);
 
   res.status(200).json({ data: item });
 }
