@@ -26,3 +26,21 @@ export class ConflictError extends AppError {
     super(409, "CONFLICT", message);
   }
 }
+
+export class TokenExpiredError extends AppError{
+  constructor (message : string){
+    super(401,"TOKEN_EXPIRED", message)
+  }
+}
+
+export class TokenInvalidError extends AppError{
+  constructor(message : string){
+    super(401,"TOKEN_INVALID", message)
+  }
+}
+
+export class InvalidCredentialsError extends AppError{
+  constructor(message : string){
+    super(401,"INVALID_CREDENTIAL",message)
+  }
+}
