@@ -3,6 +3,8 @@ import BagsPage from "./pages/BagsPage";
 import BagDetailPage from "./pages/BagDetailPage";
 import ItemsPage from "./pages/ItemsPage"
 import { NavBar } from "./components/NavBar";
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 function App() {
   return (
     <>
@@ -11,6 +13,8 @@ function App() {
       <Route path="/bags" element={<BagsPage />} />
       <Route path="/bags/:id" element={<BagDetailPage/>}/>
       <Route path="/items" element={<ItemsPage/>}/>
+      <Route path="/login" element={<LoginPage/>}/>
+      <Route path="/register" element={<RegisterPage/>}/>
     </Routes>
     </>
   );

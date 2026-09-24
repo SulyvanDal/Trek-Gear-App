@@ -61,3 +61,10 @@ export type CreateItemInput = {
 };
 
 export type UpdateItemInput = Partial<CreateItemInput>;
+
+export type RegisterInput = {
+  email : string;
+  password : string;
+}
+export type LoginInput = RegisterInput;
+
