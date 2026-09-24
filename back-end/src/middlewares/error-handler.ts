@@ -3,7 +3,7 @@ import { AppError } from "../lib/errors.ts";
 
 export function errorHandler(
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) {

@@ -46,6 +46,7 @@ model BagItem {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  passwordHash String 
   createdAt DateTime @default(now())
   items     Item[]
   bags      Bag[]
