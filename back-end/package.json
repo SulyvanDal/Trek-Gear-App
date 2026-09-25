@@ -9,6 +9,7 @@
     "build": "tsc",
     "start": "node dist/server.js"
   },
+  "engines": { "node": ">=22" },
   "keywords": [],
   "author": "",
   "license": "ISC",
