@@ -11,31 +11,37 @@ export function NavBar() {
     navigate("/login");
   }
   return (
-    <nav className={styles.navBar}>
+    <div className={styles.navBarContainer}>
+      <nav className={styles.navBar}>
+        <div className={styles.tabs}>
+          {context.isAuthenticated && (
+            <NavLink
+              to="/bags"
+              className={({ isActive }) =>
+                isActive ? styles.tabActive : styles.tab
+              }
+            >
+              Sacs
+            </NavLink>
+          )}
+          {context.isAuthenticated && (
+            <NavLink
+              to="/items"
+              end
+              className={({ isActive }) =>
+                isActive ? styles.tabActive : styles.tab
+              }
+            >
+              Inventaire
+            </NavLink>
+          )}
+        </div>
+      </nav>
       {context.isAuthenticated && (
-        <NavLink
-          to="/bags"
-          className={({ isActive }) =>
-            isActive ? styles.tabActive : styles.tab
-          }
-        >
-          Sacs
-        </NavLink>
+        <button className={styles.logoutButton} onClick={() => handleLogout()}>
+          Déconnexion
+        </button>
       )}
-      {context.isAuthenticated && (
-        <NavLink
-          to="/items"
-          end
-          className={({ isActive }) =>
-            isActive ? styles.tabActive : styles.tab
-          }
-        >
-          Inventaire
-        </NavLink>
-      )}
-      {context.isAuthenticated && (
-        <button onClick={() => handleLogout()}>Déconnexion</button>
-      )}
-    </nav>
+    </div>
   );
 }

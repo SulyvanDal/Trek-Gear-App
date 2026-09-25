@@ -13,6 +13,7 @@ dist/
 # base locale
 *.db
 *.db-journal
+*.bak
 
 # OS / éditeur
 .DS_Store
