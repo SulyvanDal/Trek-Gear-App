@@ -27,7 +27,13 @@ export function createItem(userId: number, input: CreateItemInput) {
 
 export async function deleteItemById(userId: number, id: number) {
   try {
-    await prisma.item.delete({ where: { ownerId: userId, id } });
+    await prisma.$transaction([
+      prisma.bagItem.updateMany({
+        where: { containerItemId: id },
+        data: { containerItemId: null },
+      }),
+      prisma.item.delete({ where: { ownerId: userId, id } }),
+    ]);
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&

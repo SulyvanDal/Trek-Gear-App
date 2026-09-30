@@ -39,8 +39,12 @@ model BagItem {
   itemId      Int
   bagQuantity Int     @default(1)
   isRequired  Boolean @default(false)
+  containerItem BagItem? @relation("container", fields: [bagId,containerItemId], references: [bagId,itemId], onDelete: Restrict)
+  containerItemId Int?
+  contents BagItem[] @relation("container")
 
   @@id([bagId, itemId])
+  
 }
 
 model User {

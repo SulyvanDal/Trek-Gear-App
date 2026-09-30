@@ -5,6 +5,7 @@ export const addBagItemSchema = z
     itemId: z.number().int().min(1),
     bagQuantity: z.number().int().min(1).default(1),
     isRequired: z.boolean().default(false),
+    containerItemId : z.number().int().min(1).optional()
   })
   .strict();
 export type AddBagItemInput = z.infer<typeof addBagItemSchema>;
@@ -16,10 +17,12 @@ export type BagItemLine = {
   isRequired: boolean;
   quantity: number;
   weightGrams: number;
+  containerItemId : number | null;
 };
 
 export const updateBagItemSchema = z.object({
   bagQuantity : z.number().int().min(1).optional(),
   isRequired : z.boolean().optional(),
+  containerItemId : z.number().int().min(1).optional().nullable()
 }).strict();
 export type UpdateBagItemInput = z.infer<typeof updateBagItemSchema>
