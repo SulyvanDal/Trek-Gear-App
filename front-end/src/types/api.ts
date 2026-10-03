@@ -24,6 +24,7 @@ export type BagItemLine = {
   isRequired: boolean;
   quantity: number;
   weightGrams: number;
+  containerItemId: number | null;
 };
 
 export type Totals = {
@@ -46,11 +47,13 @@ export type AddItemToBagInput = {
   itemId: number;
   bagQuantity: number;
   isRequired: boolean;
+  containerItemId?: number;
 };
 
 export type UpdateBagItemInput = {
   bagQuantity?: number;
   isRequired?: boolean;
+  containerItemId?: number | null;
 };
 
 export type CreateItemInput = {
@@ -63,8 +66,7 @@ export type CreateItemInput = {
 export type UpdateItemInput = Partial<CreateItemInput>;
 
 export type RegisterInput = {
-  email : string;
-  password : string;
-}
+  email: string;
+  password: string;
+};
 export type LoginInput = RegisterInput;
-

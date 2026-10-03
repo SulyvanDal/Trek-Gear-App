@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useItems } from "../hooks/useItems";
-import type { Item } from "../types/api";
+import type { BagItemLine, Item } from "../types/api";
 import { useAddBagItem } from "../hooks/useAddBagItem";
 import styles from "./AddBagItemModal.module.css";
 import modalStyles from "./Modal.module.css";
+import { SelectContainer } from "./SelectContainer";
 
 export function AddBagItemModal({
   bagId,
+  containerList,
   onClose,
 }: {
   bagId: number;
+  containerList : BagItemLine[];
   onClose: () => void;
 }) {
   const items = useItems();
@@ -23,6 +26,7 @@ export function AddBagItemModal({
   const [isRequired, setIsRequired] = useState<boolean>(false);
   const [pickedItem, setPickedItem] = useState<Item | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+  const [itemContainerId, setItemContainerId] = useState<number|null>(null);
   const itemsFilteredByCategories = items.data.filter(
     (item) => categoryFilter === "" || item.category === categoryFilter,
   );
@@ -42,6 +46,7 @@ export function AddBagItemModal({
       itemId: pickedItem.id,
       bagQuantity: quantity,
       isRequired,
+      containerItemId : itemContainerId ?? undefined,
     });
     if (success) onClose();
   }
@@ -129,6 +134,7 @@ export function AddBagItemModal({
             Optionnel
           </button>
         </div>
+        <SelectContainer containerList={containerList} onChange={setItemContainerId} value={itemContainerId}/>
         <div className={modalStyles.actions}>
           <button className={modalStyles.cancelButton} onClick={onClose}>
             Annuler

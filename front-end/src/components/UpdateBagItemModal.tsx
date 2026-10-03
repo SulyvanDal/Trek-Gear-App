@@ -2,24 +2,31 @@ import { useState } from "react";
 import { useUpdateBagItem } from "../hooks/useUpdateBagItem";
 import type { BagItemLine } from "../types/api";
 import modalStyles from "./Modal.module.css";
+import { SelectContainer } from "./SelectContainer";
 
 export function UpdateBagItemModal({
   bagId,
   row,
+  containerList,
   onClose,
 }: {
   bagId: number;
   row: BagItemLine;
+  containerList: BagItemLine[];
   onClose: () => void;
 }) {
   const item = useUpdateBagItem();
   const [isRequired, setIsRequired] = useState<boolean>(row.isRequired);
   const [quantity, setQuantity] = useState<number>(row.quantity);
+  const [itemContainerId, setItemContainerId] = useState<number | null>(
+    row.containerItemId,
+  );
 
   async function handleConfirm() {
     const success = await item.submit(bagId, row.itemId, {
       bagQuantity: quantity,
       isRequired: isRequired,
+      containerItemId: itemContainerId,
     });
     if (success) onClose();
   }
@@ -57,13 +64,20 @@ export function UpdateBagItemModal({
           <button
             type="button"
             className={`${modalStyles.toggleButton} ${
-              !isRequired ? modalStyles.toggleActive : modalStyles.toggleInactive
+              !isRequired
+                ? modalStyles.toggleActive
+                : modalStyles.toggleInactive
             }`}
             onClick={() => setIsRequired(false)}
           >
             Optionnel
           </button>
         </div>
+        <SelectContainer
+          containerList={containerList.filter((line) => line.itemId !== row.itemId)}
+          onChange={setItemContainerId}
+          value={itemContainerId}
+        />
         <div className={modalStyles.actions}>
           <button className={modalStyles.cancelButton} onClick={onClose}>
             Annuler
