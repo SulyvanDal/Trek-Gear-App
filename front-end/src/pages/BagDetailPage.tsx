@@ -1,22 +1,23 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useBagContents } from "../hooks/useBagContents";
-import { groupByCategory } from "../utils/groupByCategory";
 import { formatGramsToKg } from "../utils/formatGramsToKg";
-import { computeTotalWeight } from "../utils/computeTotalWeight";
 import styles from "./BagDetailPage.module.css";
 import { AddBagItemModal } from "../components/AddBagItemModal";
 import { useState } from "react";
 import { useDeleteBagItem } from "../hooks/useDeleteBagItem";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { useDeleteBag } from "../hooks/useDeleteBag";
 import { UpdateBagItemModal } from "../components/UpdateBagItemModal";
 import type { BagItemLine } from "../types/api";
+import { buildBagItemTree, type BagItemNode } from "../utils/buildBagItemTree";
+import { RangementRow } from "../components/RangementRow";
+import { ItemRow } from "../components/ItemRow";
 
 function BagDetailPage() {
   const param = useParams();
   const bagId = Number(param.id);
   const bagContent = useBagContents(bagId);
-  const bagContentByCategory = groupByCategory(bagContent.data);
+  const bagContentByContainers = buildBagItemTree(bagContent.data);
   const removeItem = useDeleteBagItem();
   const removeBag = useDeleteBag();
   const navigate = useNavigate();
@@ -27,9 +28,13 @@ function BagDetailPage() {
   if (bagContent.error) return <p>{bagContent.error}</p>;
   if (!bagContent.totals) return <p>Pas d'item dans le sac</p>;
 
-  async function handleDeleteItemConfirm(itemId: number) {
-    if (window.confirm("Voulez- vous supprimer cet item ?")) {
-      const success = await removeItem.remove(bagId, itemId);
+  async function handleDeleteItemConfirm(node: BagItemNode) {
+    const message =
+      node.category === "Rangement"
+        ? "Voulez-vous retirer le rangement du sac ? Les items présents seront en vrac"
+        : "Voulez- vous retirer cet item du sac ?";
+    if (window.confirm(message)) {
+      const success = await removeItem.remove(bagId, node.itemId);
       if (success) {
         bagContent.refetch();
       }
@@ -78,56 +83,104 @@ function BagDetailPage() {
           + Ajouter un élément
         </button>
       </div>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleBlock}>
+          <div className={styles.sectionTitle}>Rangements</div>
+          <div className={styles.sectionMeta}>
+            {bagContentByContainers.rangements.length} rangements
+            {" · "}
+            Obligatoire{" "}
+            {formatGramsToKg(
+              bagContentByContainers.rangements.reduce(
+                (somme, node) => somme + node.requiredWeightGrams,
+                0,
+              ),
+            )}{" "}
+            kg
+            {" · "}
+            Optionnel{" "}
+            {formatGramsToKg(
+              bagContentByContainers.rangements.reduce(
+                (somme, node) => somme + node.optionalWeightGrams,
+                0,
+              ),
+            )}{" "}
+            kg
+          </div>
+        </div>
+        <div className={styles.sectionWeight}>
+          {formatGramsToKg(
+            bagContentByContainers.rangements.reduce(
+              (somme, node) => somme + node.totalWeightGrams,
+              0,
+            ),
+          )}{" "}
+          kg
+        </div>
+      </div>
       <ul className={styles.categoryList}>
-        {bagContentByCategory.map((bag) => (
-          <li key={bag.category} className={styles.categoryGroup}>
-            <div className={styles.categoryHeader}>
-              <div className={styles.categoryName}>{bag.category}</div>
-              <div className={styles.categoryWeight}>
-                {formatGramsToKg(computeTotalWeight(bag.items))} kg
-              </div>
-            </div>
-            <ul className={styles.itemList}>
-              {bag.items.map((row) => (
-                <li key={row.itemId} className={styles.itemRow}>
-                  <div
-                    className={`${styles.badgeCore} ${
-                      row.isRequired
-                        ? styles.badgeRequired
-                        : styles.badgeOptional
-                    }`}
-                  >
-                    {row.isRequired ? "Obligatoire" : "Optionnel"}
-                  </div>
-                  <div className={styles.itemName}>{row.name}</div>
-                  <div className={styles.itemQuantity}>×{row.quantity}</div>
-                  <div className={styles.itemWeight}>
-                    {formatGramsToKg(row.weightGrams * row.quantity)} kg
-                  </div>
-                  <button
-                    className={styles.editButton}
-                    onClick={() => {
-                      setItemtarget(row);
-                    }}
-                  >
-                    <MdEdit/>
-                  </button>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleDeleteItemConfirm(row.itemId)}
-                  >
-                    <MdDelete size={20} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </li>
+        {bagContentByContainers.rangements.map((row) => (
+          <RangementRow
+            key={row.itemId}
+            node={row}
+            onEdit={(node) => setItemtarget(node)}
+            onDelete={(node) => handleDeleteItemConfirm(node)}
+            depth={0}
+          />
+        ))}
+      </ul>
+
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleBlock}>
+          <div className={styles.sectionTitle}>En vrac</div>
+          <div className={styles.sectionMeta}>
+            {bagContentByContainers.vrac.length} éléments
+            {" · "}
+            Obligatoire{" "}
+            {formatGramsToKg(
+              bagContentByContainers.vrac.reduce(
+                (somme, node) => somme + node.requiredWeightGrams,
+                0,
+              ),
+            )}{" "}
+            kg
+            {" · "}
+            Optionnel{" "}
+            {formatGramsToKg(
+              bagContentByContainers.vrac.reduce(
+                (somme, node) => somme + node.optionalWeightGrams,
+                0,
+              ),
+            )}{" "}
+            kg
+          </div>
+        </div>
+        <div className={styles.sectionWeight}>
+          {formatGramsToKg(
+            bagContentByContainers.vrac.reduce(
+              (somme, node) => somme + node.totalWeightGrams,
+              0,
+            ),
+          )}{" "}
+          kg
+        </div>
+      </div>
+      <ul className={styles.categoryList}>
+        {bagContentByContainers.vrac.map((row) => (
+          <ItemRow
+            key={row.itemId}
+            node={row}
+            onDelete={(node) => handleDeleteItemConfirm(node)}
+            onEdit={(node) => setItemtarget(node)}
+            depth={0}
+          />
         ))}
       </ul>
 
       {isModalCreateOpen && (
         <AddBagItemModal
           bagId={bagId}
+          containerList={bagContent.data.filter((line)=>line.category==="Rangement")}
           onClose={() => {
             setIsModalCreateOpen(false);
             bagContent.refetch();
@@ -138,7 +191,8 @@ function BagDetailPage() {
       {itemTarget && (
         <UpdateBagItemModal
           bagId={bagId}
-          row={itemTarget}
+          row={itemTarget} 
+          containerList={bagContent.data.filter((line)=>line.category==="Rangement")}
           onClose={() => {
             setItemtarget(null);
             bagContent.refetch();

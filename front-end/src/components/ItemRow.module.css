@@ -1,0 +1,91 @@
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 12px;
+  padding-right: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.spacer {
+  width: 24px;
+  flex: none;
+}
+
+.badgeCore {
+  width: 88px;
+  flex: none;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.badgeRequired {
+  background-color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  color: var(--color-card-bg);
+}
+
+.badgeOptional {
+  background-color: transparent;
+  border: 1px solid var(--color-option-bar);
+  color: var(--color-secondary);
+}
+
+.itemName {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+}
+
+.itemQuantity {
+  width: 32px;
+  flex: none;
+  font-size: 13px;
+  color: var(--color-secondary);
+  text-align: right;
+}
+
+.itemWeight {
+  width: 72px;
+  flex: none;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.editButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  color: var(--color-accent);
+  background: var(--color-bg);
+}
+
+.deleteButton:hover {
+  color: var(--color-error);
+  background: var(--color-bg);
+}
